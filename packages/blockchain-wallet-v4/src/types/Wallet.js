@@ -6,19 +6,10 @@ import Maybe from 'data.maybe'
 import Bitcoin from 'bitcoinjs-lib'
 import memoize from 'fast-memoize'
 import BIP39 from 'bip39'
-import {
-  compose,
-  curry,
-  map,
-  is,
-  pipe,
-  __,
-  concat,
-  split,
-  isNil,
-  flip
-} from 'ramda'
+import { compose, concat, curry, map, is, pipe, __, split, isNil } from 'ramda'
 import { traversed, traverseOf, over, view, set } from 'ramda-lens'
+
+import { promiseToTask } from '../utils/functional'
 import * as crypto from '../walletCrypto'
 import { shift, shiftIProp } from './util'
 import Type from './Type'
@@ -293,29 +284,27 @@ export const newHDWallet = curry((mnemonic, password, wallet) => {
   )
 })
 
-// newHDAccount :: String -> String? -> Wallet -> Task Error Wallet
-export const newHDAccount = curry((label, password, network, wallet) => {
-  let hdWallet = HDWalletList.selectHDWallet(selectHdWallets(wallet))
-  let index = hdWallet.accounts.size
-  let appendAccount = curry((w, account) => {
-    let accountsLens = compose(
-      hdWallets,
-      HDWalletList.hdwallet,
-      HDWallet.accounts
+export const newHDAccount = curry(
+  (securityModule, label, password, network, wallet) => {
+    let hdWallet = HDWalletList.selectHDWallet(selectHdWallets(wallet))
+    let index = hdWallet.accounts.size
+    let appendAccount = curry((w, account) => {
+      let accountsLens = compose(
+        hdWallets,
+        HDWalletList.hdwallet,
+        HDWallet.accounts
+      )
+      let accountWithIndex = set(HDAccount.index, index, account)
+      return over(accountsLens, accounts => accounts.push(accountWithIndex), w)
+    })
+
+    return promiseToTask(
+      HDWallet.generateAccount(securityModule, password, index, label, network)
     )
-    let accountWithIndex = set(HDAccount.index, index, account)
-    return over(accountsLens, accounts => accounts.push(accountWithIndex), w)
-  })
-  return applyCipher(
-    wallet,
-    password,
-    flip(crypto.decryptSecPass),
-    hdWallet.seedHex
-  )
-    .map(HDWallet.generateAccount(index, label, network))
-    .chain(applyCipher(wallet, password, HDAccount.encrypt))
-    .map(appendAccount(wallet))
-})
+      .chain(applyCipher(wallet, password, HDAccount.encrypt))
+      .map(appendAccount(wallet))
+  }
+)
 
 // setLegacyAddressLabel :: String -> String -> Wallet -> Wallet
 export const setLegacyAddressLabel = curry((address, label, wallet) => {
