@@ -3,7 +3,6 @@ const chalk = require('chalk')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const Webpack = require('webpack')
 const path = require('path')
 const fs = require('fs')
@@ -93,10 +92,7 @@ module.exports = {
           { loader: 'thread-loader', options: { workerParallelJobs: 50 } },
           {
             loader: 'babel-loader',
-            options: securityProcessBabelConfig(
-              null,
-              `./packages/security-process`
-            )
+            options: securityProcessBabelConfig
           }
         ]
       },
@@ -110,7 +106,7 @@ module.exports = {
           { loader: 'thread-loader', options: { workerParallelJobs: 50 } },
           {
             loader: 'babel-loader',
-            options: mainProcessBabelConfig(null, `./packages/main-process`)
+            options: mainProcessBabelConfig
           }
         ]
       },

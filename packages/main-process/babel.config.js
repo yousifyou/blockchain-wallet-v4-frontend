@@ -1,51 +1,61 @@
-module.exports = (api, baseDirectory = `.`) => {
-  // api isn't set when called from Webpack.
-  if (api) {
-    api.cache.forever()
-  }
+const path = require(`path`)
 
-  const babelPlugins = [
+const resolve = directory => path.resolve(__dirname, directory)
+
+module.exports = {
+  presets: ['@babel/preset-env', '@babel/preset-react'],
+  plugins: [
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-proposal-object-rest-spread',
     'babel-plugin-styled-components',
     [
       'module-resolver',
       {
-        root: [`${baseDirectory}/src`],
-        alias: { data: `${baseDirectory}/src/data` }
+        root: [resolve('src')],
+        alias: { data: resolve('src/data') }
       }
-    ]
-  ]
-
-  return {
-    presets: ['@babel/preset-env', '@babel/preset-react'],
-    plugins: babelPlugins.concat([
-      [
-        'react-intl',
-        { messagesDir: `${baseDirectory}/build/extractedMessages` }
+    ],
+    ['react-intl', { messagesDir: resolve('build/extractedMessages') }]
+  ],
+  ignore: [],
+  env: {
+    production: {
+      presets: [
+        ['@babel/preset-env', { modules: false }],
+        '@babel/preset-react'
+      ],
+      plugins: [
+        '@babel/plugin-proposal-class-properties',
+        '@babel/plugin-proposal-object-rest-spread',
+        'babel-plugin-styled-components',
+        [
+          'module-resolver',
+          {
+            root: [resolve('src')],
+            alias: { data: resolve('src/data') }
+          }
+        ],
+        ['react-intl', { messagesDir: resolve('build/extractedMessages') }]
       ]
-    ]),
-    ignore: [],
-    env: {
-      production: {
-        presets: [
-          ['@babel/preset-env', { modules: false }],
-          '@babel/preset-react'
+    },
+    development: {
+      presets: [
+        ['@babel/preset-env', { modules: false }],
+        '@babel/preset-react'
+      ],
+      plugins: [
+        '@babel/plugin-proposal-class-properties',
+        '@babel/plugin-proposal-object-rest-spread',
+        'babel-plugin-styled-components',
+        [
+          'module-resolver',
+          {
+            root: [resolve('src')],
+            alias: { data: resolve('src/data') }
+          }
         ],
-        plugins: babelPlugins.concat([
-          [
-            'react-intl',
-            { messagesDir: `${baseDirectory}/build/extractedMessages` }
-          ]
-        ])
-      },
-      development: {
-        presets: [
-          ['@babel/preset-env', { modules: false }],
-          '@babel/preset-react'
-        ],
-        plugins: babelPlugins.concat('react-hot-loader/babel')
-      }
+        'react-hot-loader/babel'
+      ]
     }
   }
 }
