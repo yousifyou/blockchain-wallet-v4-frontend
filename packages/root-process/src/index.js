@@ -31,14 +31,14 @@ const pathnameIsInSecurityProcess = pathname =>
 
   const mainProcessPromise = createProcess({
     name: `main`,
-    src: `/main.html#/login`
+    src: MAIN_DOMAIN + `/index.html#/login`
   })
 
   const pathname = window.location.hash.slice(1)
 
   const securityProcess = await createProcess({
     name: `security`,
-    src: `/security.html#${pathname}`
+    src: SECURITY_DOMAIN + `/index.html#${pathname}`
   })
 
   setForeground(securityProcess, `lightgreen`)
