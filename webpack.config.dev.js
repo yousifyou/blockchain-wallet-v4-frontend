@@ -105,7 +105,7 @@ const devServer = {
     // This is to locally test transferring cookies from transfer_stored_values.html
     app.get('/Resources/transfer_stored_values.html', function(req, res) {
       res.sendFile(
-        path.join(__dirname, '/../../config/mocks/transfer_stored_values.html')
+        path.join(__dirname, './config/mocks/transfer_stored_values.html')
       )
     })
 

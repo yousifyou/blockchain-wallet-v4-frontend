@@ -115,11 +115,6 @@ export const fromMasterHDNode = curry((masterHDNode, typeId) => {
   return fromMetadataHDNode(metadataHDNode, typeId)
 })
 
-export const fromHdWallet = curry((hdWallet, typeId) => {
-  const masterHdNode = getMasterHDNode(hdWallet.seedHex)
-  return fromMasterHDNode(masterHdNode, typeId)
-})
-
 export const encrypt = curry((key, data) =>
   crypto.encryptDataWithKey(data, key, null)
 )
