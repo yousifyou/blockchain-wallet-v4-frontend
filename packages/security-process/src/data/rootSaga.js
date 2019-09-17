@@ -51,27 +51,21 @@ const languageInitSaga = function * ({ imports }) {
   }
 }
 
-export default function * rootSaga ({
-  api,
-  imports,
-  networks,
-  options,
-  securityModule
-}) {
-  const coreSagas = coreSagasFactory({ api, networks, options, securityModule })
+export default function * rootSaga (args) {
+  const coreSagas = coreSagasFactory(args)
 
   yield all([
     call(welcomeSaga),
     fork(alerts),
-    fork(analytics({ api })),
-    fork(auth({ api, coreSagas, imports })),
-    fork(components({ api, coreSagas, networks, options })),
-    fork(modules({ api, coreSagas, networks, securityModule })),
-    fork(preferences({ imports })),
-    fork(goals({ api })),
-    fork(wallet({ coreSagas })),
-    fork(coreRootSagaFactory({ api, networks, options })),
-    fork(router()),
-    call(languageInitSaga, { imports })
+    fork(analytics({ ...args, coreSagas })),
+    fork(auth({ ...args, coreSagas })),
+    fork(components({ ...args, coreSagas })),
+    fork(modules({ ...args, coreSagas })),
+    fork(preferences({ ...args, coreSagas })),
+    fork(goals({ ...args, coreSagas })),
+    fork(wallet({ ...args, coreSagas })),
+    fork(coreRootSagaFactory({ ...args, coreSagas })),
+    fork(router({ ...args, coreSagas })),
+    call(languageInitSaga, { ...args, coreSagas })
   ])
 }

@@ -9,10 +9,6 @@ import BigNumber from 'bignumber.js'
  */
 export const isValidAddress = address => /^0x[a-fA-F0-9]{40}$/.test(address)
 
-/**
- * @param {function} deriveBIP32Key
- * @param {integer} index
- */
 export const getPrivateKey = async (
   { deriveBIP32Key },
   secondPassword,
