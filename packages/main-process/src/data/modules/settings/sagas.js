@@ -329,7 +329,8 @@ export default ({ api, coreSagas, imports, securityModule }) => {
 
   const showXlmPrivateKey = function * () {
     try {
-      const keyPair = utils.xlm.getKeyPair(securityModule)
+      const password = yield call(promptForSecondPassword)
+      const keyPair = yield call(utils.xlm.getKeyPair, securityModule, password)
       yield put(
         actions.modules.settings.addShownXlmPrivateKey(keyPair.secret())
       )
