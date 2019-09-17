@@ -1,10 +1,13 @@
 /* eslint-disable */
+const path = require(`path`)
+const PATHS = require('./config/paths')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
 const mainProcess = require(`./packages/main-process/webpack.config.ci`)
 const rootProcess = require(`./packages/root-process/webpack.config.ci`)
 const securityProcess = require(`./packages/security-process/webpack.config.ci`)
 
+let envConfig = {}
 let manifestCacheBust = new Date().getTime()
 
 const common = {
