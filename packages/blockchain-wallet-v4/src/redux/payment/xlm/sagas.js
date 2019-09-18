@@ -66,6 +66,7 @@ export default ({ api, securityModule }) => {
   }
 
   const calculateSignature = function * (
+    secondPassword,
     transaction,
     transport,
     scrambleKey,
@@ -74,7 +75,12 @@ export default ({ api, securityModule }) => {
     switch (fromType) {
       case ADDRESS_TYPES.ACCOUNT:
         if (!transaction) throw new Error(NO_TX_ERROR)
-        return xlmSigner.sign({ transaction }, securityModule)
+
+        return yield call(
+          xlmSigner.sign,
+          { secondPassword, securityModule },
+          transaction
+        )
       case ADDRESS_TYPES.LOCKBOX:
         return yield call(
           xlmSigner.signWithLockbox,
@@ -254,11 +260,11 @@ export default ({ api, securityModule }) => {
         return makePayment(merge(p, { transaction }))
       },
 
-      * sign (transport, scrambleKey) {
+      * sign (password, transport, scrambleKey) {
         const transaction = prop('transaction', p)
         const signed = yield call(
           calculateSignature,
-          securityModule,
+          password,
           transaction,
           transport,
           scrambleKey,

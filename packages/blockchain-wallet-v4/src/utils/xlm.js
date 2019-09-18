@@ -46,10 +46,10 @@ export const decodeXlmURI = uri => {
   return { address: destination, amount, memo, note: msg }
 }
 
-export const getKeyPair = async (
-  { deriveSLIP10ed25519Key },
-  secondPassword
-) => {
+export const getKeyPair = async ({
+  secondPassword,
+  securityModule: { deriveSLIP10ed25519Key }
+}) => {
   const masterKey = await deriveSLIP10ed25519Key(
     { secondPassword },
     `m/44'/148'/0'`

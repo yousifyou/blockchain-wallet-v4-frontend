@@ -2,8 +2,8 @@ import { getKeyPair } from '../utils/xlm'
 import * as StellarSdk from 'stellar-sdk'
 import Str from '@ledgerhq/hw-app-str'
 
-export const sign = ({ transaction }, securityModule) => {
-  const keyPair = getKeyPair(securityModule)
+export const sign = async ({ secondPassword, securityModule }, transaction) => {
+  const keyPair = await getKeyPair({ secondPassword, securityModule })
   transaction.sign(keyPair)
   return transaction
 }
