@@ -12,9 +12,7 @@ const src = path.join(__dirname, `src`)
 
 module.exports = ({ envConfig, PATHS }) => ({
   name: `main`,
-  entry: {
-    entry: ['@babel/polyfill', path.join(src, 'index.js')]
-  },
+  entry: ['@babel/polyfill', path.join(src, 'index.js')],
   output: {
     path: PATHS.ciBuild,
     chunkFilename: '[name].[chunkhash:10].js',
