@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Redirect, Route } from 'react-router-dom'
 import styled from 'styled-components'
 
+import Alerts from 'components/Alerts'
 import Header from './Header'
 import AnalyticsTracker from 'providers/AnalyticsTracker'
 import ErrorBoundary from 'providers/ErrorBoundaryProvider'
@@ -75,6 +76,7 @@ class SecurityLayoutContainer extends React.PureComponent {
             <Wrapper>
               <AnalyticsTracker />
               <ErrorBoundary>
+                <Alerts />
                 <Modals />
                 <HeaderContainer>
                   <Header />
