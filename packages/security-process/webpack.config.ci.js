@@ -11,12 +11,12 @@ const runBundleAnalyzer = process.env.ANALYZE
 const src = path.join(__dirname, `src`)
 
 module.exports = ({ envConfig, PATHS }) => ({
-  name: `main`,
+  name: `security`,
   entry: ['@babel/polyfill', path.join(src, 'index.js')],
   output: {
     path: PATHS.ciBuild,
     chunkFilename: '[name].[chunkhash:10].js',
-    publicPath: '/main/',
+    publicPath: '/security/',
     crossOriginLoading: 'anonymous'
   },
   module: {
