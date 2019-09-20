@@ -10,7 +10,7 @@ import {
   TwoStepSetup,
   TwoStepYubico
 } from './Settings'
-import { PairingCode } from './Wallet'
+import { PairingCode, UpgradeWallet } from './Wallet'
 
 const Modals = () => (
   <div>
@@ -25,6 +25,7 @@ const Modals = () => (
     <TwoStepGoogleAuthenticator />
     <TwoStepSetup />
     <TwoStepYubico />
+    <UpgradeWallet />
   </div>
 )
 

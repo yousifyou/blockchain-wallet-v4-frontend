@@ -264,11 +264,10 @@ export const importLegacyAddress = curry(
   }
 )
 
-// upgradeToHd :: String -> String -> String? -> Task Error Wallet
 export const upgradeToHd = curry(
-  (mnemonic, firstLabel, password, network, wallet) => {
+  (securityModule, mnemonic, firstLabel, password, network, wallet) => {
     return newHDWallet(mnemonic, password, wallet).chain(
-      newHDAccount(firstLabel, password, network)
+      newHDAccount(securityModule, firstLabel, password, network)
     )
   }
 )

@@ -109,9 +109,19 @@ export default ({ api, coreSagas, imports }) => {
     if (userFlowSupported) yield put(actions.modules.profile.signIn())
   }
 
-  const loginRoutineSaga = function * () {
+  const loginRoutineSaga = function * ({ payload: { mobileLogin, firstLogin } }) {
     try {
+      // If needed, the user should upgrade its wallet before being able to open the wallet
+      const isHdWallet = yield select(selectors.core.wallet.isHdWallet)
+      if (!isHdWallet) {
+        yield call(upgradeWalletSaga)
+      }
       yield put(actions.auth.authenticate())
+
+      imports.mainProcessDispatch(
+        actions.auth.loginRoutine(mobileLogin, firstLogin)
+      )
+
       const guid = yield select(selectors.core.wallet.getGuid)
       // store guid in cache for future login
       yield put(actions.cache.guidEntered(guid))

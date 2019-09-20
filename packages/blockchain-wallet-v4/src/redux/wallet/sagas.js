@@ -133,6 +133,7 @@ export default ({ api, networks, securityModule }) => {
     if (isEmpty(hdwallets)) {
       let mnemonic = yield call(generateMnemonic, api)
       let upgradeWallet = Wallet.upgradeToHd(
+        securityModule,
         mnemonic,
         'My Bitcoin Wallet',
         password,

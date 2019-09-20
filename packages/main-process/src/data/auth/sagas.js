@@ -111,11 +111,6 @@ export default ({ api, coreSagas }) => {
   }
   const loginRoutineSaga = function * ({ payload: { mobileLogin, firstLogin } }) {
     try {
-      // If needed, the user should upgrade its wallet before being able to open the wallet
-      const isHdWallet = yield select(selectors.core.wallet.isHdWallet)
-      if (!isHdWallet) {
-        yield call(upgradeWalletSaga)
-      }
       yield call(coreSagas.kvStore.root.fetchRoot, askSecondPasswordEnhancer)
       // If there was no eth metadata kv store entry, we need to create one and that requires the second password.
       yield call(
