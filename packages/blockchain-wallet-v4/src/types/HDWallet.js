@@ -74,30 +74,7 @@ export const reviver = jsObject => {
   return new HDWallet(jsObject)
 }
 
-export const deriveAccountNodeAtIndex = (seedHex, index, network) => {
-  let seed = BIP39.mnemonicToSeed(BIP39.entropyToMnemonic(seedHex))
-  let masterNode = Bitcoin.HDNode.fromSeedBuffer(seed, network)
-  return masterNode
-    .deriveHardened(44)
-    .deriveHardened(0)
-    .deriveHardened(index)
-}
-
-export const generateAccount = async (
-  { deriveBIP32Key },
-  secondPassword,
-  index,
-  label,
-  network
-) => {
-  const key = await deriveBIP32Key(
-    {
-      network,
-      secondPassword
-    },
-    `m/44'/0'/${index}'`
-  )
-
+export const generateAccount = (key, label) => {
   const node = Bitcoin.HDNode.fromBase58(key)
   return HDAccount.fromJS(HDAccount.js(label, node, null))
 }
