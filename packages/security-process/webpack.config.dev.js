@@ -74,7 +74,7 @@ module.exports = ({ envConfig, PATHS }) => ({
       NETWORK_TYPE: JSON.stringify(envConfig.NETWORK_TYPE)
     }),
     new HtmlWebpackPlugin({
-      template: path.join(src, 'index.html'),
+      template: path.join(src, 'template.html'),
       filename: 'index.html'
     }),
     new Webpack.IgnorePlugin({

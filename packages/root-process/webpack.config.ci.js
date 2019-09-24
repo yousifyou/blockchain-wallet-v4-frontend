@@ -38,7 +38,7 @@ module.exports = ({ PATHS }) => ({
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: path.join(src, 'index.html'),
+      template: path.join(src, 'template.html'),
       filename: 'index.html'
     }),
     new Webpack.DefinePlugin({

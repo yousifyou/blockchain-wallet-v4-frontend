@@ -95,7 +95,9 @@ const devServer = {
   key: sslEnabled ? fs.readFileSync(PATHS.sslConfig + '/key.pem', 'utf8') : '',
   port: 8080,
   hot: false,
-  historyApiFallback: true,
+  historyApiFallback: {
+    rewrites: [{ from: /^\/$/, to: '/root/index.html' }]
+  },
   before(app) {
     app.get('/Resources/wallet-options-v4.json', function(req, res) {
       // combine wallet options base with custom environment config
@@ -197,7 +199,12 @@ const devServer = {
 module.exports = [
   {
     ...common,
-    ...rootProcess({ PATHS }),
+    ...rootProcess({
+      PATHS: {
+        ...PATHS,
+        appBuild: path.join(PATHS.appBuild, `root`)
+      }
+    }),
     devServer
   },
   {
