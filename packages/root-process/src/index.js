@@ -31,6 +31,7 @@ const pathnameIsInSecurityProcess = pathname =>
 
   const mainProcessPromise = createProcess({
     name: `main`,
+    sandbox: `allow-forms allow-scripts`,
     src: MAIN_DOMAIN + `/index.html#/login`
   })
 
@@ -38,6 +39,9 @@ const pathnameIsInSecurityProcess = pathname =>
 
   const securityProcess = await createProcess({
     name: `security`,
+    // Allow  downloading of the backup phrase recovery PDF via `allow-popups
+    // allow-popups-to-escape-sandbox`.
+    sandbox: `allow-forms allow-popups allow-popups-to-escape-sandbox allow-scripts`,
     src: SECURITY_DOMAIN + `/index.html#${pathname}`
   })
 

@@ -387,12 +387,16 @@ export default ({ ErrorEvent, EventTarget, getRandomValues }) => {
     return context.eventTarget
   }
 
-  const CreateProcess = ({ insertHTML, newProcesses }) => ({ name, src }) =>
+  const CreateProcess = ({ insertHTML, newProcesses }) => ({
+    name,
+    sandbox = `allow-scripts`,
+    src
+  }) =>
     new Promise(resolve => {
       const element = insertHTML(
         `<iframe
            name="${name || Key()}"
-           sandbox="allow-forms allow-scripts"
+           sandbox="${sandbox}"
            src="${src}"
          ></iframe>`
       )

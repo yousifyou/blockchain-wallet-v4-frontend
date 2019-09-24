@@ -72,7 +72,7 @@ const devServer = {
   port: 8080,
   hot: true,
   historyApiFallback: {
-    rewrites: [{ from: /^\/$/, to: '/root/index.html' }]
+    index: `/root/index.html`
   },
   before(app) {
     app.get('/Resources/wallet-options-v4.json', function(req, res) {
