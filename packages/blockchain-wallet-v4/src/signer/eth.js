@@ -15,9 +15,8 @@ const toHex = value => {
 }
 
 export const signErc20 = curry(
-  (network = 1, securityModule, data, contractAddress) => {
+  (network = 1, privateKey, data, contractAddress) => {
     const { index, to, amount, nonce, gasPrice, gasLimit } = data
-    const privateKey = eth.getPrivateKey(securityModule, index)
     const transferMethodHex = '0xa9059cbb'
     const txParams = {
       to: contractAddress,
@@ -38,9 +37,9 @@ export const signErc20 = curry(
   }
 )
 
-export const sign = curry((network = 1, securityModule, data) => {
+export const sign = curry((network = 1, privateKey, data) => {
   const { index, to, amount, nonce, gasPrice, gasLimit } = data
-  const privateKey = eth.getPrivateKey(securityModule, index)
+
   const txParams = {
     to,
     nonce: toHex(nonce),
@@ -50,8 +49,11 @@ export const sign = curry((network = 1, securityModule, data) => {
     chainId: network
   }
   const tx = new EthereumTx(txParams)
+
   tx.sign(privateKey)
+
   const rawTx = '0x' + tx.serialize().toString('hex')
+
   return Task.of(rawTx)
 })
 

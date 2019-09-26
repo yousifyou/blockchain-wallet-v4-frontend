@@ -9,16 +9,7 @@ import BigNumber from 'bignumber.js'
  */
 export const isValidAddress = address => /^0x[a-fA-F0-9]{40}$/.test(address)
 
-export const getPrivateKey = async (
-  { deriveBIP32Key },
-  secondPassword,
-  index
-) => {
-  const key = await deriveBIP32Key(
-    { secondPassword },
-    `m/44'/60'/0'/0/${index}`
-  )
-
+export const getPrivateKey = async key => {
   return EthHd.fromExtendedKey(key)
     .getWallet()
     .getPrivateKey()

@@ -13,14 +13,16 @@ import EthUtil from 'ethereumjs-util'
 import * as S from '../../selectors'
 import { isValidIndex } from './utils'
 import { eth } from '../../../signer'
-import { isString, isPositiveInteger } from '../../../utils/checks'
-import settingsSagaFactory from '../../../redux/settings/sagas'
-import {
+import { getPrivateKey ,
   calculateEffectiveBalance,
   isValidAddress,
   convertGweiToWei,
   calculateFee
 } from '../../../utils/eth'
+
+import { isString, isPositiveInteger } from '../../../utils/checks'
+import settingsSagaFactory from '../../../redux/settings/sagas'
+
 import { ADDRESS_TYPES } from '../btc/utils'
 import { FETCH_FEES_FAILURE } from '../model'
 
@@ -60,10 +62,10 @@ export default ({ api, securityModule }) => {
   }
 
   const calculateSignature = function * (
-    securityModule,
     network,
     transport,
     scrambleKey,
+    privateKey,
     p
   ) {
     switch (p.raw.fromType) {
@@ -76,10 +78,10 @@ export default ({ api, securityModule }) => {
           )).getOrFail('missing_contract_addr')
           sign = data =>
             taskToPromise(
-              eth.signErc20(network, securityModule, data, contractAddress)
+              eth.signErc20(network, privateKey, data, contractAddress)
             )
         } else {
-          sign = data => taskToPromise(eth.sign(network, securityModule, data))
+          sign = data => taskToPromise(eth.sign(network, privateKey, data))
         }
         return yield call(sign, p.raw)
       }
@@ -274,11 +276,19 @@ export default ({ api, securityModule }) => {
       },
 
       * sign (transport, scrambleKey) {
+        const index = path(['raw', 'index'], p)
+        const bip32Key = yield securityModule.deriveBIP32Key(
+          { secondPassword: null },
+          `m/44'/60'/0'/0/${index}`
+        )
+        const privateKey = yield getPrivateKey(bip32Key)
+
         const signed = yield call(
           calculateSignature,
           network,
           transport,
           scrambleKey,
+          privateKey,
           p
         )
         return makePayment(mergeRight(p, { signed }))
