@@ -13,7 +13,8 @@ import EthUtil from 'ethereumjs-util'
 import * as S from '../../selectors'
 import { isValidIndex } from './utils'
 import { eth } from '../../../signer'
-import { getPrivateKey ,
+import {
+  getPrivateKey,
   calculateEffectiveBalance,
   isValidAddress,
   convertGweiToWei,
@@ -275,14 +276,13 @@ export default ({ api, securityModule }) => {
         return makePayment(mergeRight(p, { raw }))
       },
 
-      * sign (transport, scrambleKey) {
+      * sign (secondPassword, transport, scrambleKey) {
         const index = path(['raw', 'index'], p)
         const bip32Key = yield securityModule.deriveBIP32Key(
-          { secondPassword: null },
+          { secondPassword },
           `m/44'/60'/0'/0/${index}`
         )
         const privateKey = yield getPrivateKey(bip32Key)
-
         const signed = yield call(
           calculateSignature,
           network,
