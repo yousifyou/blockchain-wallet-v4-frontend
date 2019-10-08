@@ -10,7 +10,8 @@ import {
   calculateFee as utilsCalculateFee,
   calculateReserve,
   overflowsFullBalance,
-  overflowsEffectiveBalance
+  overflowsEffectiveBalance,
+  getKeyPair
 } from '../../../utils/xlm'
 import {
   isString,
@@ -70,17 +71,13 @@ export default ({ api, securityModule }) => {
     transaction,
     transport,
     scrambleKey,
-    fromType
+    fromType,
+    keyPair
   ) {
     switch (fromType) {
       case ADDRESS_TYPES.ACCOUNT:
         if (!transaction) throw new Error(NO_TX_ERROR)
-
-        return yield call(
-          xlmSigner.sign,
-          { secondPassword, securityModule },
-          transaction
-        )
+        return yield call(xlmSigner.sign, keyPair, transaction)
       case ADDRESS_TYPES.LOCKBOX:
         return yield call(
           xlmSigner.signWithLockbox,
@@ -260,15 +257,21 @@ export default ({ api, securityModule }) => {
         return makePayment(merge(p, { transaction }))
       },
 
-      * sign (password, transport, scrambleKey) {
+      * sign (secondPassword, transport, scrambleKey) {
         const transaction = prop('transaction', p)
+        const masterKey = yield securityModule.deriveSLIP10ed25519Key(
+          { secondPassword },
+          `m/44'/148'/0'`
+        )
+        const keyPair = yield getKeyPair(masterKey)
         const signed = yield call(
           calculateSignature,
-          password,
+          secondPassword,
           transaction,
           transport,
           scrambleKey,
-          path(['from', 'type'], p)
+          path(['from', 'type'], p),
+          keyPair
         )
         return makePayment(merge(p, { signed }))
       },

@@ -46,14 +46,6 @@ export const decodeXlmURI = uri => {
   return { address: destination, amount, memo, note: msg }
 }
 
-export const getKeyPair = async ({
-  secondPassword,
-  securityModule: { deriveSLIP10ed25519Key }
-}) => {
-  const masterKey = await deriveSLIP10ed25519Key(
-    { secondPassword },
-    `m/44'/148'/0'`
-  )
-
+export const getKeyPair = async masterKey => {
   return StellarSdk.Keypair.fromRawEd25519Seed(masterKey.key)
 }
