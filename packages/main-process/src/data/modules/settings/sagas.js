@@ -311,13 +311,13 @@ export default ({ api, coreSagas, imports, securityModule }) => {
           .toString('hex')
         yield put(actions.modules.settings.addShownEthPrivateKey(legPriv))
       } else {
-        let priv = (yield call(
-          utils.eth.getPrivateKey,
-          securityModule,
-          password,
-          0
-        )).toString('hex')
-
+        const bip32Key = yield securityModule.deriveBIP32Key(
+          { secondPassword: password },
+          `m/44'/60'/0'/0/0`
+        )
+        let priv = (yield call(utils.eth.getPrivateKey, bip32Key)).toString(
+          'hex'
+        )
         yield put(actions.modules.settings.addShownEthPrivateKey(priv))
       }
     } catch (e) {
