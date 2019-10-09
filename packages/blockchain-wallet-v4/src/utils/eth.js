@@ -18,8 +18,8 @@ export const getPrivateKey = async key => {
 export const privateKeyToAddress = pk =>
   EthUtil.toChecksumAddress(EthUtil.privateToAddress(pk).toString('hex'))
 
-export const deriveAddress = async (...args) =>
-  privateKeyToAddress(await getPrivateKey(...args))
+export const deriveAddress = async key =>
+  privateKeyToAddress(await getPrivateKey(key))
 
 export const deriveAddressFromXpub = xpub => {
   const ethPublic = EthHd.fromExtendedKey(xpub)

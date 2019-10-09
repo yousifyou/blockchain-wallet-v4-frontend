@@ -30,14 +30,11 @@ import { callTask } from '../../../utils/functional'
 export default ({ api, networks, securityModule } = {}) => {
   const deriveAccount = function * (secondPassword) {
     const defaultIndex = 0
-
-    const addr = yield call(
-      eth.deriveAddress,
-      securityModule,
-      secondPassword,
-      defaultIndex
+    const bip32Key = yield securityModule.deriveBIP32Key(
+      { secondPassword },
+      `m/44'/60'/0'/0/${defaultIndex}`
     )
-
+    const addr = yield call(eth.deriveAddress, bip32Key)
     return { defaultIndex, addr }
   }
   const buildErc20Entry = (token, coinModels) => ({
